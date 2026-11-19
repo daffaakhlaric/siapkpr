@@ -54,7 +54,7 @@ export default async function handler(req, res) {
   }
 
   const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.MAIL_FROM || 'daffa.akhlaric@siapkpr.id';
+  const from = process.env.MAIL_FROM || 'inquiry@siapkpr.com';
   if (!apiKey || !EMAIL_RE.test(from)) {
     return res.status(503).json({ success: false, message: 'Layanan email belum dikonfigurasi' });
   }
