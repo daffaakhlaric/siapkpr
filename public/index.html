@@ -644,6 +644,7 @@ html.light .footer-social a:hover svg{fill:var(--accent)}
         <label for="fmsg">Pesan</label>
         <textarea id="fmsg" rows="3" placeholder="Tulis pesan Anda di sini..."></textarea>
       </div>
+      <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden"><label for="website">Website</label><input id="website" type="text" name="website" tabindex="-1" autocomplete="off"></div>
       <button class="btn-accent btn-full" onclick="submitForm()">Kirim <svg class="arr" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
     </div>
     <div class="modal-success" id="formSuccess" style="display:none">
@@ -751,34 +752,31 @@ async function submitForm(){
   const name=document.getElementById('fname').value.trim();
   const email=document.getElementById('femail').value.trim();
   const phone=document.getElementById('fphone').value.trim();
-  const type=document.getElementById('ftype').value;
-  const msg=document.getElementById('fmsg').value.trim();
+  const tipe=document.getElementById('ftype').value;
+  const message=document.getElementById('fmsg').value.trim();
+  const website=document.getElementById('website').value;
   if(!name||!email){alert('Mohon isi Nama Lengkap dan Email.');return}
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){alert('Mohon masukkan alamat email yang valid.');return}
   const btn=document.querySelector('#contactForm .btn-full');
-  const origText=btn.innerHTML;
-  btn.innerHTML='Mengirim...';btn.disabled=true;
+  const original=btn.innerHTML;
+  btn.disabled=true;btn.textContent='Mengirim...';
   try{
-    const res=await fetch('https://api.web3forms.com/submit',{
+    const response=await fetch('/api/leads',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        access_key:'0f831ebb-2e0f-48bd-aee7-6705bff8d686',
-        subject:'SiapKPR - Pesan Baru dari '+name,
-        from_name:'SiapKPR Website',
-        name:name,
-        email:email,
-        phone:phone||'-',
-        tipe:type||'-',
-        message:msg||'-'
-      })
+      body:JSON.stringify({name,email,phone,tipe,message,website})
     });
-    const data=await res.json();
-    if(data.success){
-      document.getElementById('contactForm').style.display='none';
-      document.getElementById('formSuccess').style.display='block';
-    }else{alert('Gagal mengirim pesan. Silakan coba lagi.');btn.innerHTML=origText;btn.disabled=false}
-  }catch(e){alert('Terjadi kesalahan. Silakan coba lagi.');btn.innerHTML=origText;btn.disabled=false}
+    const result=await response.json().catch(()=>({}));
+    if(!response.ok||!result.success) throw new Error(result.message||'Gagal mengirim pesan');
+    document.getElementById('contactForm').style.display='none';
+    document.getElementById('formSuccess').style.display='block';
+    ['fname','femail','fphone','fmsg','website'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('ftype').value='';
+  }catch(error){
+    alert('Pesan belum berhasil dikirim. Silakan coba lagi.');
+  }finally{
+    btn.disabled=false;btn.innerHTML=original;
+  }
 }
 
 </script>

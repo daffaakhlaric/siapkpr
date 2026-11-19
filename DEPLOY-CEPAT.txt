@@ -1,0 +1,15 @@
+SIAPKPR — VERCEL + RESEND (VERSI PUBLIC FOLDER)
+
+STRUKTUR: public/index.html, public/about.html, api/leads.js, package.json, vercel.json.
+1. Ekstrak ZIP; upload seluruh ISI folder ke ROOT repository GitHub.
+2. Pilih Framework Preset: Other; Root Directory: ./; Build Command: kosong.
+3. Resend → Domains: verifikasi siapkpr.id tanpa mengubah MX Microsoft 365 utama.
+4. Resend → API Keys: buat API key Sending access.
+5. Vercel → Environment Variables:
+   RESEND_API_KEY = re_... (RAHASIA)
+   MAIL_FROM = daffa.akhlaric@siapkpr.id
+6. Redeploy. Cek website / dan /about.html lalu coba form Hubungi Kami.
+7. Periksa keempat inbox, Resend Emails, serta Vercel Function Logs.
+
+JANGAN masukkan folder api ke public. Endpoint /api/leads harus ditangani Vercel Function.
+SMTP: smtp.resend.com:587 STARTTLS, user 'resend', password RESEND_API_KEY.
